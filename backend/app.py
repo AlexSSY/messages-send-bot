@@ -8,6 +8,8 @@ from aiogram.utils.web_app import safe_parse_webapp_init_data
 from dotenv import load_dotenv
 import uvicorn
 
+from . import crud
+
 
 load_dotenv()
 app = FastAPI()
@@ -86,7 +88,12 @@ async def get_telegram_user_id(init_data: str = Header(..., alias="X-Telegram-In
 
 @app.get("/me")
 async def get_me(user_id: int = Depends(get_telegram_user_id)):
-    return {"telegram_user_id": user_id}
+    return { "telegram_user_id": user_id }
+
+
+@app.get("/sessions")
+async def get_me(user_id: int = Depends(get_telegram_user_id)):
+    return await crud.get_sessions_by_user(user_id)
 
 
 if __name__ == "__main__":
