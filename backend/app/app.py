@@ -1,20 +1,16 @@
-import os
-from fastapi import FastAPI, Request, Header, Depends, Body
-from fastapi.exceptions import HTTPException
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from aiogram import types
 
-from . import crud
-from . import models
-from . import service
-from .bot import bot, TOKEN, dp
-from depends import get_db, get_telegram_user_id
+from .bot import bot, dp
+from .depends import get_telegram_user_id
 from .config import Config
 
 
-async def lifespan(app):
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await bot.set_webhook(Config.WEBHOOK_URL)
     yield
     await bot.delete_webhook()

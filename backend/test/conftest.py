@@ -1,9 +1,10 @@
 import pytest
+import aiosqlite
 from pathlib import Path
 from fastapi.testclient import TestClient
-import aiosqlite
+
 from app.app import app
-from app.db import get_db
+from app.depends import get_db, get_telegram_user_id
 
 
 SQL_DIR = Path(__file__).parent.parent / "app"
@@ -29,7 +30,7 @@ def override_get_telegram_user_id():
 
 
 app.dependency_overrides[get_db] = override_get_db
-app.dependency_overrides["get_telegram_user_id"] = override_get_telegram_user_id
+app.dependency_overrides[get_telegram_user_id] = override_get_telegram_user_id
 
 
 @pytest.fixture

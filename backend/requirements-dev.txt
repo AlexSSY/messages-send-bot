@@ -1,4 +1,4 @@
 -r requirements.txt
 faker
 pytest
-requests
+pytest-asyncio
