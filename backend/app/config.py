@@ -10,3 +10,4 @@ class Config:
     WEBHOOK_PATH = f"/webhook/{BOT_TOKEN}"
     WEBHOOK_URL = os.getenv("BACKEND") + WEBHOOK_PATH
     FRONTEND = os.getenv("FRONTEND")
+    MY_PHONE = os.getenv("MY_PHONE")

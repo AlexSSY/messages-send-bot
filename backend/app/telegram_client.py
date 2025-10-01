@@ -1,5 +1,6 @@
 import os
 from telethon import TelegramClient
+from telethon.sessions.memory import MemorySession
 from telethon.errors import (
     SessionPasswordNeededError, 
     PhoneCodeInvalidError,
@@ -8,23 +9,62 @@ from telethon.errors import (
 )
 from typing import Dict, Any
 import logging
+import aiosqlite
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class TelegramAuthManager:
-    def __init__(self):
+class MySessionStorage(MemorySession):
+    def __init__(self, db: aiosqlite.Connection, phone_number: str, telegram_user_id: int):
+        super().__init__()
+        self.db = db
+        self.phone_number = phone_number
+        self.telegram_user_id = telegram_user_id
+
+    async def load(self):
+        cursor = await self.db.execute(
+            "SELECT auth_token FROM telethon_sessions WHERE telegram_user_id = ? AND phone_number = ?",
+            (self.telegram_user_id, self.phone_number)
+        )
+        row = await cursor.fetchone()
+        if row and row["auth_token"]:
+            return row["auth_token"]
+        return b""
+
+    async def save(self):
+        data = super().save()
+
+        if not data:
+            # ничего сохранять — просто выходим
+            return
+
+        auth_token = data.decode("utf-8")
+        await self.db.execute(
+            """
+            INSERT INTO telethon_sessions (telegram_user_id, phone_number, auth_token)
+            VALUES (?, ?, ?)
+            ON CONFLICT(telegram_user_id, phone_number) DO UPDATE SET auth_token=excluded.auth_token
+            """,
+            (self.telegram_user_id, self.phone_number, auth_token)
+        )
+        await self.db.commit()
+
+
+class TelegramClientManager:
+    def __init__(self, db: aiosqlite.Connection, telegram_user_id: int):
         self.api_id = int(os.getenv('TELEGRAM_API_ID'))
         self.api_hash = os.getenv('TELEGRAM_API_HASH')
         self.active_clients: Dict[str, TelegramClient] = {}
         self.pending_verifications: Dict[str, Dict] = {}
+        self.db = db
+        self.telegram_user_id = telegram_user_id
 
-    async def create_client(self, session_name: str) -> TelegramClient:
+    async def create_client(self, phone_number: str) -> TelegramClient:
         """Create a new Telegram client"""
         client = TelegramClient(
-            f"sessions/{session_name}",
+            MySessionStorage(self.db, phone_number, self.telegram_user_id),
             self.api_id,
             self.api_hash
         )
@@ -34,9 +74,7 @@ class TelegramAuthManager:
     async def send_code_request(self, phone_number: str) -> Dict[str, Any]:
         """Send verification code and return phone_code_hash"""
         try:
-            session_name = f"user_{phone_number}"
-            client = await self.create_client(session_name)
-            
+            client = await self.create_client(phone_number)
             # Send code request
             sent_code = await client.send_code_request(phone_number)
             
@@ -241,4 +279,4 @@ class TelegramAuthManager:
             }
 
 # Global instance
-telegram_manager = TelegramAuthManager()
+# telegram_manager = TelegramAuthManager()

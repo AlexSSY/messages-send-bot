@@ -2,7 +2,7 @@ CREATE TABLE telethon_sessions (
     id INTEGER PRIMARY KEY,
     telegram_user_id BIGINT,
     phone_number VARCHAR NOT NULL UNIQUE,
-    auth_token TEXT NOT NULL,
+    auth_token BLOB NOT NULL,
     phone_code_hash TEXT
 );
 
