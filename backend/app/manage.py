@@ -4,8 +4,8 @@ import aiosqlite
 from faker import Faker
 import random
 
-import db as db_module
-import crud
+from app import db as db_module
+from app import crud
 
 
 fake = Faker()
@@ -13,8 +13,9 @@ fake = Faker()
 async def seed(count: int = 5):
     for _ in range(count):
         telegram_user_id = random.randint(100000000, 999999999)  # фейковый user_id
+        phone_number = fake.phone_number()
         auth_token = fake.sha256()  # случайный "токен"
-        await crud.add_session(telegram_user_id, auth_token)
+        await crud.add_session(telegram_user_id, phone_number, auth_token)
     print(f"✅ Inserted {count} fake records")
 
 

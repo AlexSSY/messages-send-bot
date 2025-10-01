@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss()
   ],
   server: { 
-    allowedHosts: ["e0fc78751b3b17d88b229c8ff0345af1.serveo.net"],
+    allowedHosts: ["90d0ac47d36b.ngrok-free.app"],
     proxy: {
       "/api": {
         target: "http://localhost:8000",
