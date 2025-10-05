@@ -12,6 +12,7 @@ import {
     initPopovers, 
     initTabs, 
     initTooltips } from 'flowbite'
+import HeaderComponent from './components/HeaderComponent.vue';
 
 // initialize components based on data attribute selectors
 onMounted(() => {
@@ -30,9 +31,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/add">Profile</router-link>
-  </nav>
-  <router-view />
+  <!-- <HeaderComponent /> -->
+
+  <!-- Main Content -->
+  <main class="pt-8 pb-20 safe-area-top safe-area-bottom">
+    <div class="container mx-auto px-4">
+      <router-view />
+    </div>
+  </main>
 </template>
+
+<script>
+export default {
+  componensts: [
+  ]
+}
+</script>

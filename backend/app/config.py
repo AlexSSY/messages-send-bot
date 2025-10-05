@@ -11,3 +11,4 @@ class Config:
     WEBHOOK_URL = os.getenv("BACKEND") + WEBHOOK_PATH
     FRONTEND = os.getenv("FRONTEND")
     MY_PHONE = os.getenv("MY_PHONE")
+    DB_PATH = os.getenv("DB_NAME")

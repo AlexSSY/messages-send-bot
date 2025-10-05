@@ -1,14 +1,117 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telegram Web App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Telegram Web App specific styles */
+    :root {
+      --tg-theme-bg-color: #ffffff;
+      --tg-theme-text-color: #000000;
+      --tg-theme-hint-color: #707579;
+      --tg-theme-link-color: #3390ec;
+      --tg-theme-button-color: #3390ec;
+      --tg-theme-button-text-color: #ffffff;
+      --tg-theme-secondary-bg-color: #f1f1f1;
+    }
+
+    body {
+      background-color: var(--tg-theme-bg-color);
+      color: var(--tg-theme-text-color);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .tg-header {
+      background-color: var(--tg-theme-bg-color);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .tg-button {
+      background-color: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
+    }
+
+    .tg-button:hover {
+      opacity: 0.9;
+    }
+
+    .tg-card {
+      background-color: var(--tg-theme-secondary-bg-color);
+    }
+
+    .tg-text-hint {
+      color: var(--tg-theme-hint-color);
+    }
+
+    .tg-link {
+      color: var(--tg-theme-link-color);
+    }
+
+    /* Safe area for notch devices */
+    .safe-area-top {
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .safe-area-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  </style>
+  <script>
+    // Initialize Telegram Web App
+    const tg = window.Telegram.WebApp;
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+  <!-- <script src="https://flowbite.com/docs/flowbite.min.js?v=3.1.2a"></script> -->
+  <!-- Telegram Web App Initialization -->
+  <script>
+    // Expand the Web App to full available height
+    tg.expand();
+
+    // Set up the color scheme based on Telegram theme
+    document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
+    document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
+    document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#707579');
+    document.documentElement.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color || '#3390ec');
+    document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#3390ec');
+    document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
+    document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f1f1f1');
+
+    // Set up main button if needed
+    // tg.MainButton.setText('CONTINUE');
+    // tg.MainButton.show();
+
+    // Handle theme changes
+    tg.onEvent('themeChanged', function () {
+      document.documentElement.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color);
+      document.documentElement.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color);
+      document.documentElement.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color);
+      document.documentElement.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color);
+      document.documentElement.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color);
+      document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color);
+      document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color);
+    });
+
+    // Handle viewport changes
+    tg.onEvent('viewportChanged', function () {
+      // Adjust layout if needed when viewport changes
+      console.log('Viewport changed');
+    });
+  </script>
+</body>
+
 </html>
